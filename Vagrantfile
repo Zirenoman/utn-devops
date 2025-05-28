@@ -13,17 +13,11 @@ Vagrant.configure("2") do |config|
 
   # Provisioning script
   config.vm.provision "shell", inline: <<-SHELL
-    # Actualizar paquetes
-    apt-get update
-
-    # Instalar Apache y Git
-    apt-get install -y apache2 git
-
-    # Clonar la aplicación web desde GitHub
-	rm -rf /var/www/html/*
-    git clone https://github.com/Fichen/utn-devops-app.git /var/www/html
-
-    # Reiniciar Apache para aplicar cambios
-    systemctl restart apache2
+    sudo apt-get update -y
+    sudo apt-get install -y apache2 git
+    sudo rm -rf /var/www/html/*
+    sudo git clone https://github.com/Fichen/utn-devops-app.git /var/www/html
+    sudo systemctl restart apache2
+    sudo systemctl enable apache2
   SHELL
 end
