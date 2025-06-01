@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  grupo2-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: grupo2_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - grupo2-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      default:
+        aliases:
+          - ${CONTAINER_HOSTNAME}.${CONTAINER_DOMAIN}
+
+  grupo2-db:
+    image: mysql:5.7
+    container_name: grupo2_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    ports:
+      - "4400:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+    networks:
+      - default
+
+volumes:
+  mysql_data:
+
+networks:
+  default:

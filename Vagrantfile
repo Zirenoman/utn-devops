@@ -5,25 +5,21 @@ Vagrant.configure("2") do |config|
   # Box base: Ubuntu 22.04
   config.vm.box = "ubuntu/jammy64"
 
-  # Redireccionar puerto 80 de la VM al 8080 del host
-  config.vm.network "forwarded_port", guest: 80, host: 8080
+  # Redireccionar puerto 8080 del guest al 8080 del host (acceso por localhost:8080)
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
+
+  # Red privada para acceso por IP (192.168.56.10:8080)
+  config.vm.network "private_network", ip: "192.168.56.10"
 
   # Mapear la carpeta del proyecto al directorio /vagrant en la VM
   config.vm.synced_folder ".", "/vagrant"
 
-  # Provisioning script
-  config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update -y
-    sudo apt-get install -y apache2
+  # Provisioning script externo
+  config.vm.provision "shell", path: "Vagrant.bootstrap.sh"
 
-    # Copiar tu index.html desde la carpeta compartida
-    sudo cp /vagrant/index.html /var/www/html/index.html
-
-    # (Opcional) Copiar configuración personalizada de Apache
-    sudo cp /vagrant/000-default.conf /etc/apache2/sites-available/000-default.conf
-
-    # Reiniciar Apache
-    sudo systemctl restart apache2
-    sudo systemctl enable apache2
-  SHELL
+  # Config opcional para que la VM use más recursos
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
 end
