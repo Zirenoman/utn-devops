@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant"
 
   # Provisioning script externo
-  config.vm.provision "shell", path: "Vagrant.bootstrap.sh"
+  config.vm.provision "shell", path: "unidad-2-docker/Vagrant.bootstrap.sh"
 
   # Config opcional para que la VM use más recursos
   config.vm.provider "virtualbox" do |vb|
